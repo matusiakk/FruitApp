@@ -32,5 +32,8 @@ interface FruitApi {
     @GET("{name}")
     suspend fun getFruitDetails(@Path("name") name: String): Fruit
 
+    @GET("all")
+    suspend fun getList(): List<Fruit>
+
 }
 

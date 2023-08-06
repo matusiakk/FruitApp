@@ -1,4 +1,4 @@
-package com.example.fruitapp
+package com.example.fruitapp.vm
 
 import android.util.Log
 import androidx.compose.runtime.State
@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
+class DetailsViewModel @Inject constructor(
     private val api: FruitApi
 ): ViewModel() {
 

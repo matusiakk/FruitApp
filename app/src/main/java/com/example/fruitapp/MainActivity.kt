@@ -1,21 +1,9 @@
 package com.example.fruitapp
 
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavArgumentBuilder
-import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -23,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.fruitapp.ui.screens.DetailsScreen
+import com.example.fruitapp.ui.screens.ListScreen
 import com.example.fruitapp.ui.screens.StartScreen
 import com.example.fruitapp.ui.theme.FruitAppTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,31 +23,32 @@ class MainActivity : ComponentActivity() {
         setContent {
             FruitAppTheme {
                 val navController = rememberNavController()
-                val vm = viewModel<MainViewModel>()
-                NavigationComponent(navController = navController, vm = vm)
+                NavigationComponent(navController = navController)
             }
         }
     }
 }
 
+
 @Composable
-fun NavigationComponent(navController: NavHostController,
-                        vm: MainViewModel) {
+fun NavigationComponent(navController: NavHostController) {
     NavHost(navController = navController,
-        startDestination = "start"){
-        composable(route = "start"){
-                StartScreen(onClickButton = { str ->
-                    vm.getFruitDetails(str)
-
-                    navController.navigate(route = "details/$str")
-                })
+        startDestination = Screen.StartScreen.route){
+        composable(route = Screen.StartScreen.route){
+                StartScreen(navController = navController)
         }
-        composable(route = "details/{name}") {
-            val fruit = vm.state.value.fruit
-
-                if (fruit != null) {
-                    DetailsScreen(fruit = fruit)
-                }
-                }
+        composable(route = Screen.DetailsScreen.route + "/{name}",
+        arguments = listOf(
+            navArgument("name"){
+                type = NavType.StringType
             }
+        )
+        ){entry ->
+                DetailsScreen(name = entry.arguments?.getString("name"),
+                                navController = navController)
+                }
+        composable(route = Screen.ListScreen.route){
+            ListScreen(navController = navController)
         }
+    }
+}
