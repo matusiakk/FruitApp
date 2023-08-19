@@ -1,4 +1,4 @@
-package com.example.fruitapp.ui.screens
+package com.example.fruitapp.ui.details
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -15,6 +15,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,28 +27,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import com.example.fruitapp.vm.DetailsViewModel
 import com.example.fruitapp.R
-import com.example.fruitapp.Screen
 
 
 @Composable
 fun DetailsScreen(name: String?,
-                  viewModel: DetailsViewModel = hiltViewModel(),
-                  navController: NavController) {
+                  state: DetailsState,
+                  onIntent: (DetailsIntent) -> Unit) {
 
-    if (name != null) {
-        viewModel.getFruitDetails(name)
-    }
-    val fruit = viewModel.state.value.fruit
+    if (name != null) onIntent(DetailsIntent.LoadDetails(name))
+
+    val fruit = rememberUpdatedState(state).value.fruit
 
     val modifier = Modifier
         .padding(vertical = 5.dp, horizontal = 16.dp)
         .fillMaxWidth()
 
-        Image(
+    Image(
         modifier = Modifier.fillMaxSize(),
         bitmap = ImageBitmap.imageResource(R.drawable.background),
         contentDescription = null,
@@ -55,8 +51,7 @@ fun DetailsScreen(name: String?,
         alpha = 0.5f
     )
 
-    if (fruit != null) {
-
+    if (fruit != null)
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -163,49 +158,14 @@ fun DetailsScreen(name: String?,
                     )
                 }
             }
-            BackButton( navController)
-        }
-    } else {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-
-            Text(
-                modifier = Modifier.padding(bottom = 50.dp),
-                textAlign = TextAlign.Center,
-                fontSize = 25.sp,
-                color = Color.Black,
-                text = stringResource(R.string.fruit_not_found)
-            )
 
             Button(modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 16.dp, end = 16.dp, top = 20.dp),
                 shape = RoundedCornerShape(30),
                 colors = ButtonDefaults.buttonColors(Color(0xFF338B4F)),
-                onClick = {
-                    navController.navigate(Screen.ListScreen.route)
-                }) {
-                Text(text = stringResource(R.string.list_button), color = Color.Black)
+                onClick = { onIntent(DetailsIntent.OnBackButtonClick) }) {
+                Text(text = stringResource(R.string.back_button), color = Color.Black)
             }
-
-        BackButton( navController)
         }
-    }
-}
-
-@Composable
-fun BackButton(navController: NavController) {
-    Button(modifier = Modifier
-        .fillMaxWidth()
-        .padding(start = 16.dp, end = 16.dp, top = 20.dp),
-        shape = RoundedCornerShape(30),
-        colors = ButtonDefaults.buttonColors(Color(0xFF338B4F)),
-        onClick = {
-            navController.navigate(Screen.StartScreen.route)
-        }) {
-        Text(text = stringResource(R.string.back_button), color = Color.Black)
-    }
 }

@@ -1,4 +1,4 @@
-package com.example.fruitapp
+package com.example.fruitapp.nav
 
 sealed class Screen (val route: String) {
     object StartScreen : Screen("start")

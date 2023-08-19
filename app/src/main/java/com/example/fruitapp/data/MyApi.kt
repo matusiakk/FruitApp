@@ -25,7 +25,6 @@ object MyApi {
             .build()
             .create(FruitApi::class.java)
     }
-
 }
 
 interface FruitApi {

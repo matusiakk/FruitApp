@@ -1,4 +1,4 @@
-package com.example.fruitapp.ui.screens
+package com.example.fruitapp.ui.list
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,20 +31,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.example.fruitapp.R
-import com.example.fruitapp.Screen
 import com.example.fruitapp.data.Fruit
-import com.example.fruitapp.vm.ListViewModel
 
 
 @Composable
-fun ListScreen(viewModel: ListViewModel = hiltViewModel(),
-               navController: NavController) {
+fun ListScreen(state: ListState,
+               onIntent: (ListIntent) -> Unit) {
 
-    viewModel.getList()
-    val list = viewModel.state.value
+
+    val list = rememberUpdatedState(state).value.fruitList
 
         Image(
             modifier = Modifier.fillMaxSize(),
@@ -65,7 +62,7 @@ fun ListScreen(viewModel: ListViewModel = hiltViewModel(),
 
             LazyColumn{
                 itemsIndexed(list){index, fruit ->
-                    FruitListItem(fruit, navController)
+                    FruitListItem(fruit, onIntent)
                 }
             }
         }
@@ -73,7 +70,8 @@ fun ListScreen(viewModel: ListViewModel = hiltViewModel(),
 
 @Composable
 fun FruitListItem(fruit: Fruit,
-navController: NavController) {
+                  onIntent: (ListIntent) -> Unit)
+{
     Box(modifier = Modifier
         .fillMaxWidth()
         .wrapContentSize(Alignment.TopStart)
@@ -81,7 +79,7 @@ navController: NavController) {
         .background(Color.White)
         .border(3.dp, Color.Gray, RoundedCornerShape(10.dp))
         .clickable {
-            navController.navigate(Screen.DetailsScreen.withArgs(fruit.name))
+            onIntent(ListIntent.OnFruitClick(fruit.name))
         }
     ) {
         Row(verticalAlignment = Alignment.CenterVertically,
