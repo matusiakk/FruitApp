@@ -14,6 +14,8 @@ import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,12 +28,23 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.fruitapp.R
+import com.example.fruitapp.data.Fruit
+import com.example.fruitapp.data.Nutritions
+import com.example.fruitapp.ui.theme.FruitAppTheme
+import com.example.fruitapp.ui.theme.Green
 
+@Composable
+fun StartScreen(viewModel: StartViewModel = hiltViewModel()) {
+    val state by viewModel.state.collectAsState()
+    StartScreen(state, viewModel::onIntent)
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StartScreen(
+private fun StartScreen(
     state: StartState,
     onIntent: (StartIntent) -> Unit
 ) {
@@ -86,7 +99,7 @@ fun StartScreen(
             .fillMaxWidth()
             .padding(16.dp),
             shape = RoundedCornerShape(30),
-            colors = ButtonDefaults.buttonColors(Color(0xFF338B4F)),
+            colors = ButtonDefaults.buttonColors(Green),
             onClick = { onIntent(StartIntent.OnSearchButtonClick) }
         ) {
             Text(
@@ -107,7 +120,7 @@ fun StartScreen(
             .fillMaxWidth()
             .padding(16.dp),
             shape = RoundedCornerShape(30),
-            colors = ButtonDefaults.buttonColors(Color(0xFF338B4F)),
+            colors = ButtonDefaults.buttonColors(Green),
             onClick = { onIntent(StartIntent.OnListButtonClick) }) {
             Text(
                 text = stringResource(R.string.list_button),
@@ -116,4 +129,3 @@ fun StartScreen(
         }
     }
 }
-

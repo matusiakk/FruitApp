@@ -11,13 +11,16 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,18 +34,25 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.fruitapp.R
 import com.example.fruitapp.data.Fruit
-
+import com.example.fruitapp.ui.theme.Green
 
 @Composable
-fun ListScreen(
+fun ListScreen(viewModel: ListViewModel = hiltViewModel()) {
+    val state = viewModel.state.collectAsState().value
+    ListScreen(state, viewModel::onIntent)
+}
+
+@Composable
+private fun ListScreen(
     state: ListState,
     onIntent: (ListIntent) -> Unit
 ) {
 
-
     val list = rememberUpdatedState(state).value.fruitList
+    val isLoading = state.isLoading
 
     Image(
         modifier = Modifier.fillMaxSize(),
@@ -51,6 +61,15 @@ fun ListScreen(
         contentScale = ContentScale.Crop,
         alpha = 0.5f
     )
+    if (isLoading)
+        CircularProgressIndicator(
+            modifier = Modifier
+                .fillMaxSize()
+                .size(50.dp)
+                .wrapContentSize(align = Alignment.Center),
+            color = Green
+        )
+
     Column {
         Text(
             modifier = Modifier

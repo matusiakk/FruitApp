@@ -15,7 +15,6 @@ import com.example.fruitapp.nav.Screen
 
 @HiltViewModel
 class StartViewModel @Inject constructor(
-    private val savedStateHandle: SavedStateHandle = SavedStateHandle(),
     private val api: FruitApi
 ) : ViewModel() {
 
@@ -32,14 +31,11 @@ class StartViewModel @Inject constructor(
     }
 
     private fun enterText(text: String) {
-        viewModelScope.launch {
             if (text.all { it.isLetter() })
                 _state.value = _state.value.copy(text = text)
         }
-    }
 
     private fun onSearchButtonClick() {
-        viewModelScope.launch {
 
             val text = _state.value.text
 
@@ -50,7 +46,6 @@ class StartViewModel @Inject constructor(
                             fruit = api.getFruitDetails(text),
                             showMessage = false
                         )
-                        savedStateHandle["name"] = text
                         Navigator.sendEvent(NavEvent.NavigateTo(Screen.DetailsScreen.withArgs(text)))
 
                     } catch (e: Exception) {
@@ -62,7 +57,6 @@ class StartViewModel @Inject constructor(
                 }
             }
         }
-    }
 
     private fun onListButtonClick() {
         Navigator.sendEvent(NavEvent.NavigateTo(Screen.ListScreen.route))

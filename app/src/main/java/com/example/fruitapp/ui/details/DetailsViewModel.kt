@@ -37,7 +37,11 @@ class DetailsViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 _state.value = state.value.copy(
-                    fruit = api.getFruitDetails(name)
+                    isLoading = true
+                )
+                _state.value = state.value.copy(
+                    fruit = api.getFruitDetails(name),
+                    isLoading = false
                 )
             } catch (e: Exception) {
                 Log.e("VM", "getFruitsDetails: ", e)
