@@ -1,4 +1,5 @@
 package com.example.fruitapp.data
+
 data class Fruit(
     val family: String,
     val genus: String,

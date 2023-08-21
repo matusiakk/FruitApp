@@ -36,42 +36,45 @@ import com.example.fruitapp.data.Fruit
 
 
 @Composable
-fun ListScreen(state: ListState,
-               onIntent: (ListIntent) -> Unit) {
+fun ListScreen(
+    state: ListState,
+    onIntent: (ListIntent) -> Unit
+) {
 
 
     val list = rememberUpdatedState(state).value.fruitList
 
-        Image(
-            modifier = Modifier.fillMaxSize(),
-            bitmap = ImageBitmap.imageResource(R.drawable.background),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            alpha = 0.5f
+    Image(
+        modifier = Modifier.fillMaxSize(),
+        bitmap = ImageBitmap.imageResource(R.drawable.background),
+        contentDescription = null,
+        contentScale = ContentScale.Crop,
+        alpha = 0.5f
+    )
+    Column {
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 50.dp),
+            textAlign = TextAlign.Center,
+            fontSize = 60.sp,
+            fontWeight = FontWeight.Bold,
+            text = stringResource(R.string.list_header)
         )
-        Column {
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 50.dp),
-                textAlign = TextAlign.Center,
-                fontSize = 60.sp,
-                fontWeight = FontWeight.Bold,
-                text = stringResource(R.string.list_header)
-            )
 
-            LazyColumn{
-                itemsIndexed(list){index, fruit ->
-                    FruitListItem(fruit, onIntent)
-                }
+        LazyColumn {
+            itemsIndexed(list) { index, fruit ->
+                FruitListItem(fruit, onIntent)
             }
         }
     }
+}
 
 @Composable
-fun FruitListItem(fruit: Fruit,
-                  onIntent: (ListIntent) -> Unit)
-{
+fun FruitListItem(
+    fruit: Fruit,
+    onIntent: (ListIntent) -> Unit
+) {
     Box(modifier = Modifier
         .fillMaxWidth()
         .wrapContentSize(Alignment.TopStart)
@@ -82,20 +85,25 @@ fun FruitListItem(fruit: Fruit,
             onIntent(ListIntent.OnFruitClick(fruit.name))
         }
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically,
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .padding(vertical = 5.dp, horizontal = 16.dp)
-                .fillMaxWidth()){
+                .fillMaxWidth()
+        ) {
 
-        Text(
-            modifier = Modifier
-                .padding(vertical = 5.dp, horizontal = 16.dp),
-            fontSize = 25.sp,
-            text = fruit.name)
+            Text(
+                modifier = Modifier
+                    .padding(vertical = 5.dp, horizontal = 16.dp),
+                fontSize = 25.sp,
+                text = fruit.name
+            )
 
-        Icon(painter = painterResource(R.drawable.baseline_arrow_forward_24),
-            contentDescription = null)
-    }
+            Icon(
+                painter = painterResource(R.drawable.baseline_arrow_forward_24),
+                contentDescription = null
+            )
+        }
     }
 }

@@ -3,59 +3,49 @@ package com.example.fruitapp.ui.details
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavHostController
 import com.example.fruitapp.data.FruitApi
-import com.example.fruitapp.nav.Screen
+import com.example.fruitapp.nav.NavEvent
+import com.example.fruitapp.nav.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import androidx.lifecycle.SavedStateHandle
 
 @HiltViewModel
 class DetailsViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val api: FruitApi
-): ViewModel() {
-
-    lateinit var navController: NavHostController
+) : ViewModel() {
 
     private val _state = MutableStateFlow(DetailsState())
     val state = _state.asStateFlow()
 
-    private val _intent = MutableSharedFlow<DetailsIntent>()
-    val intent = _intent.asSharedFlow()
-
     init {
-    handleIntent()
+        getFruitDetails(requireNotNull(savedStateHandle.get<String>("name")))
     }
 
-    private fun handleIntent() {
-        viewModelScope.launch {
-            intent.collect { intent ->
-                when (intent) {
-                    is DetailsIntent.LoadDetails -> getFruitDetails(intent.name)
-                    is DetailsIntent.OnBackButtonClick -> onBackButtonClick()
-                }
-            }
+    fun onIntent(intent: DetailsIntent) {
+        when (intent) {
+            is DetailsIntent.OnBackButtonClick -> onBackButtonClick()
         }
     }
 
-    private fun getFruitDetails(name: String){
-        viewModelScope.launch{
+
+    private fun getFruitDetails(name: String) {
+        viewModelScope.launch {
             try {
                 _state.value = state.value.copy(
-                    fruit = api.getFruitDetails(name))
-            } catch (e: Exception){
+                    fruit = api.getFruitDetails(name)
+                )
+            } catch (e: Exception) {
                 Log.e("VM", "getFruitsDetails: ", e)
             }
         }
     }
 
     private fun onBackButtonClick() {
-        navController.navigate(Screen.StartScreen.route)
+        Navigator.sendEvent(NavEvent.NavigateBack)
     }
-
-    fun setIntent(intent: DetailsIntent) = viewModelScope.launch { _intent.emit(intent) }
 }

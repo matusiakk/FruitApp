@@ -1,6 +1,6 @@
 package com.example.fruitapp.nav
 
-sealed class Screen (val route: String) {
+sealed class Screen(val route: String) {
     object StartScreen : Screen("start")
     object DetailsScreen : Screen("details")
     object ListScreen : Screen("list")

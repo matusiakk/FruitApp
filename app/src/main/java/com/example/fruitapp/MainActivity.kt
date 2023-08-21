@@ -9,15 +9,15 @@ import com.example.fruitapp.ui.theme.FruitAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-    class MainActivity : ComponentActivity() {
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-            setContent {
-                FruitAppTheme {
-                    val navController = rememberNavController()
-                    NavigationComponent(navController = navController)
-                }
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            FruitAppTheme {
+                val navController = rememberNavController()
+                NavigationComponent(navController = navController)
             }
         }
     }
+}
 

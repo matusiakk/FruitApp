@@ -31,11 +31,11 @@ import com.example.fruitapp.R
 
 
 @Composable
-fun DetailsScreen(name: String?,
-                  state: DetailsState,
-                  onIntent: (DetailsIntent) -> Unit) {
+fun DetailsScreen(
+    state: DetailsState,
+    onIntent: (DetailsIntent) -> Unit
+) {
 
-    if (name != null) onIntent(DetailsIntent.LoadDetails(name))
 
     val fruit = rememberUpdatedState(state).value.fruit
 
