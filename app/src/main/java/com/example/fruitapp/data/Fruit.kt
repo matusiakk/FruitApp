@@ -15,5 +15,16 @@ data class Nutritions(
     val fat: Double,
     val protein: Double,
     val sugar: Double
-)
+) {
+    operator fun get(nutrition: String): Any? {
+        return when (nutrition) {
+            "Calories" -> calories
+            "Carbohydrates" -> carbohydrates
+            "Fat" -> fat
+            "Protein" -> protein
+            "Sugar" -> sugar
+            else -> null
+        }
+    }
+}
 
