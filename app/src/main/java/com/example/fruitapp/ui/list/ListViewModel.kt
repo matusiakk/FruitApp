@@ -9,6 +9,7 @@ import com.example.fruitapp.nav.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,11 +27,10 @@ class ListViewModel @Inject constructor(
 
     private fun getList() {
         viewModelScope.launch {
-            _state.value = _state.value.copy(isLoading = true)
-            _state.value = _state.value.copy(
+            _state.update {it.copy(isLoading = true)}
+            _state.update {it.copy(
                 fruitList = api.getList(),
-                isLoading = false
-            )
+                isLoading = false)}
         }
     }
 
@@ -48,64 +48,63 @@ class ListViewModel @Inject constructor(
         }
     }
 
-    private fun selectOption(option: String) {
-        _state.value =
-            _state.value.copy(nutrition = option, isOptionMenuVisible = false, sortingOption = 0)
-
+    private fun selectOption(option: NutritionOptions) {
+        _state.update {it.copy(
+            nutrition = option,
+            isOptionMenuVisible = false,
+            sortingOption = 0)}
     }
 
     private fun onOptionDismiss() {
-        _state.value = _state.value.copy(isOptionMenuVisible = false)
+        _state.update {it.copy(isOptionMenuVisible = false)}
     }
 
     private fun onOptionClick() {
-        _state.value = _state.value.copy(isOptionMenuVisible = true)
+        _state.update {it.copy(isOptionMenuVisible = true)}
     }
 
     private fun onSortingDismiss() {
-        _state.value = _state.value.copy(isSortingMenuVisible = false)
+        _state.update {it.copy(isSortingMenuVisible = false)}
     }
 
     private fun onSortingClick() {
-        _state.value = _state.value.copy(isSortingMenuVisible = true)
+        _state.update {it.copy(isSortingMenuVisible = true)}
     }
 
     private fun onDescendingClick() {
         val nutrition = _state.value.nutrition
         val sortedFruitList = _state.value.fruitList.sortedByDescending {
             when (nutrition) {
-                "Calories" -> it.nutritions.calories.toDouble()
-                "Carbohydrates" -> it.nutritions.carbohydrates
-                "Fat" -> it.nutritions.fat
-                "Protein" -> it.nutritions.protein
-                "Sugar" -> it.nutritions.sugar
-                else -> throw IllegalArgumentException("Unknown nutrition: $nutrition")
+                NutritionOptions.Calories -> it.nutritions.calories.toDouble()
+                NutritionOptions.Carbohydrates -> it.nutritions.carbohydrates
+                NutritionOptions.Fat -> it.nutritions.fat
+                NutritionOptions.Protein -> it.nutritions.protein
+                NutritionOptions.Sugar -> it.nutritions.sugar
             }
         }
-        _state.value = _state.value.copy(
+        _state.update {it.copy(
             fruitList = sortedFruitList,
             isSortingMenuVisible = false,
             sortingOption = 2
-        )
+        )}
     }
 
     private fun onAscendingClick() {
         val nutrition = _state.value.nutrition
         val sortedFruitList = _state.value.fruitList.sortedBy {
             when (nutrition) {
-                "Calories" -> it.nutritions.calories.toDouble()
-                "Carbohydrates" -> it.nutritions.carbohydrates
-                "Fat" -> it.nutritions.fat
-                "Protein" -> it.nutritions.protein
-                "Sugar" -> it.nutritions.sugar
-                else -> throw IllegalArgumentException("Unknown nutrition: $nutrition")
+                NutritionOptions.Calories -> it.nutritions.calories.toDouble()
+                NutritionOptions.Carbohydrates -> it.nutritions.carbohydrates
+                NutritionOptions.Fat -> it.nutritions.fat
+                NutritionOptions.Protein -> it.nutritions.protein
+                NutritionOptions.Sugar -> it.nutritions.sugar
             }
         }
-        _state.value = _state.value.copy(
+        _state.update {it.copy(
             fruitList = sortedFruitList,
             isSortingMenuVisible = false,
             sortingOption = 1
-        )
+        )}
     }
 
 

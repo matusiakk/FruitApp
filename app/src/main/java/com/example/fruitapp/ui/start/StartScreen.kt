@@ -129,3 +129,29 @@ private fun StartScreen(
         }
     }
 }
+
+@Preview
+@Composable
+fun StartScreenPreview(){
+    val state = StartState(
+        text = "",
+    fruit = Fruit(
+        family = "family",
+        genus = "genus",
+        id = 12,
+        name = "kiwi",
+        nutritions = Nutritions(
+            calories = 12,
+            carbohydrates = 3.3,
+            fat = 1.4,
+            protein = 5.7,
+            sugar = 1.5
+        ),
+        order = "order"
+    ),
+    showMessage = false)
+
+    FruitAppTheme {
+        StartScreen(state) {}
+    }
+}

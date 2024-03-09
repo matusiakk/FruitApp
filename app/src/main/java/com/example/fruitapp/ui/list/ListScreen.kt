@@ -29,7 +29,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -60,138 +59,79 @@ private fun ListScreen(
     onIntent: (ListIntent) -> Unit
 ) {
 
-    val list = rememberUpdatedState(state).value.fruitList
-    val nutrition = state.nutrition
-    val isLoading = state.isLoading
-    val isSortingMenuVisible = state.isSortingMenuVisible
-    val sortingOption = state.sortingOption
-    val isOptionMenuVisible = state.isOptionMenuVisible
-    val optionList = state.nutritionList
+    with(state) {
 
-
-    if (isLoading)
-        CircularProgressIndicator(
-            modifier = Modifier
-                .fillMaxSize()
-                .size(50.dp)
-                .wrapContentSize(align = Alignment.Center),
-            color = Green
-        )
-
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = colorResource(R.color.creme)
-    ) {
-
-        Column {
-            TopAppBar(
-                colors = TopAppBarDefaults.smallTopAppBarColors(Green),
-                title = {
-                    Text(
-                        modifier = Modifier.padding(horizontal = 90.dp),
-                        text = stringResource(R.string.list_header)
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = { onIntent(ListIntent.OnBackClick) })
-                    {
-                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
-                },
-                actions = {
-                    IconButton(onClick = { onIntent(ListIntent.OnSortingClick) }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.sorting),
-                            contentDescription = "Sorting",
-                            tint = Color.Black
-                        )
-                    }
-                }
-            )
-            DropdownMenu(
-                modifier = Modifier.background(Color.White),
-                expanded = isSortingMenuVisible,
-                onDismissRequest = { onIntent(ListIntent.OnSortingDismiss) },
-                offset = DpOffset(300.dp, (-730).dp)
-            ) {
-                DropdownMenuItem(modifier = Modifier.background(Color.White),
-                    text = {
-                        Text(
-                            fontSize = 20.sp,
-                            text = stringResource(id = R.string.ascending)
-                        )
-                    },
-                    onClick = { onIntent(ListIntent.OnAscendingClick) },
-                    trailingIcon = {
-                        if (sortingOption == 1) {
-                            Icon(
-                                imageVector = Icons.Default.Check,
-                                contentDescription = null
-                            )
-                        }
-                    })
-                DropdownMenuItem(modifier = Modifier.background(Color.White),
-                    text = {
-                        Text(
-                            fontSize = 20.sp,
-                            text = stringResource(id = R.string.descending)
-                        )
-                    },
-                    onClick = { onIntent(ListIntent.OnDescendingClick) },
-                    trailingIcon = {
-                        if (sortingOption == 2) {
-                            Icon(
-                                imageVector = Icons.Default.Check,
-                                contentDescription = null
-                            )
-                        }
-                    })
-            }
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
+        if (isLoading)
+            CircularProgressIndicator(
                 modifier = Modifier
-                    .padding(vertical = 5.dp, horizontal = 16.dp)
-                    .fillMaxWidth()
-            ) {
-                Text(
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp),
-                    fontSize = 20.sp,
-                    text = stringResource(R.string.name)
+                    .fillMaxSize()
+                    .size(50.dp)
+                    .wrapContentSize(align = Alignment.Center),
+                color = Green
+            )
+
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = colorResource(R.color.creme)
+        ) {
+
+            Column {
+                TopAppBar(
+                    colors = TopAppBarDefaults.smallTopAppBarColors(Green),
+                    title = {
+                        Text(
+                            modifier = Modifier.padding(horizontal = 90.dp),
+                            text = stringResource(R.string.list_header)
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = { onIntent(ListIntent.OnBackClick) })
+                        {
+                            Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
+                        }
+                    },
+                    actions = {
+                        IconButton(onClick = { onIntent(ListIntent.OnSortingClick) }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.sorting),
+                                contentDescription = "Sorting",
+                                tint = Color.Black
+                            )
+                        }
+                    }
                 )
-                TextButton(onClick = { onIntent(ListIntent.OnOptionClick) }) {
-
-                    Text(
-                        fontSize = 20.sp,
-                        color = Color.Black,
-                        text = nutrition
-                    )
-                    Icon(
-                        painter = painterResource(id = R.drawable.baseline_arrow_drop_down_24),
-                        contentDescription = null,
-                        tint = Color.Black
-                    )
-                }
-            }
-
-            DropdownMenu(
-                modifier = Modifier.background(Color.White),
-                expanded = isOptionMenuVisible,
-                onDismissRequest = { onIntent(ListIntent.OnOptionDismiss) },
-                offset = DpOffset(260.dp, (-680).dp)
-            ) {
-                optionList.forEach { option ->
+                DropdownMenu(
+                    modifier = Modifier.background(Color.White),
+                    expanded = isSortingMenuVisible,
+                    onDismissRequest = { onIntent(ListIntent.OnSortingDismiss) },
+                    offset = DpOffset(300.dp, (-730).dp)
+                ) {
                     DropdownMenuItem(modifier = Modifier.background(Color.White),
                         text = {
                             Text(
                                 fontSize = 20.sp,
-                                text = option
+                                text = stringResource(id = R.string.ascending)
                             )
                         },
-                        onClick = { onIntent(ListIntent.SelectOption(option)) },
+                        onClick = { onIntent(ListIntent.OnAscendingClick) },
                         trailingIcon = {
-                            if (option == nutrition) {
+                            if (sortingOption == 1) {
+                                Icon(
+                                    imageVector = Icons.Default.Check,
+                                    contentDescription = null
+                                )
+                            }
+                        })
+                    DropdownMenuItem(modifier = Modifier.background(Color.White),
+                        text = {
+                            Text(
+                                fontSize = 20.sp,
+                                text = stringResource(id = R.string.descending)
+                            )
+                        },
+                        onClick = { onIntent(ListIntent.OnDescendingClick) },
+                        trailingIcon = {
+                            if (sortingOption == 2) {
                                 Icon(
                                     imageVector = Icons.Default.Check,
                                     contentDescription = null
@@ -199,11 +139,64 @@ private fun ListScreen(
                             }
                         })
                 }
-            }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .padding(vertical = 5.dp, horizontal = 16.dp)
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp),
+                        fontSize = 20.sp,
+                        text = stringResource(R.string.name)
+                    )
+                    TextButton(onClick = { onIntent(ListIntent.OnOptionClick) }) {
 
-            LazyColumn {
-                itemsIndexed(list) { index, fruit ->
-                    FruitListItem(state, fruit, onIntent)
+                        Text(
+                            fontSize = 20.sp,
+                            color = Color.Black,
+                            text = nutrition.name
+                        )
+                        Icon(
+                            painter = painterResource(id = R.drawable.baseline_arrow_drop_down_24),
+                            contentDescription = null,
+                            tint = Color.Black
+                        )
+                    }
+                }
+
+                DropdownMenu(
+                    modifier = Modifier.background(Color.White),
+                    expanded = isOptionMenuVisible,
+                    onDismissRequest = { onIntent(ListIntent.OnOptionDismiss) },
+                    offset = DpOffset(260.dp, (-680).dp)
+                ) {
+                    NutritionOptions.values().forEach { option ->
+                        DropdownMenuItem(modifier = Modifier.background(Color.White),
+                            text = {
+                                Text(
+                                    fontSize = 20.sp,
+                                    text = option.name
+                                )
+                            },
+                            onClick = { onIntent(ListIntent.SelectOption(option)) },
+                            trailingIcon = {
+                                if (option == nutrition) {
+                                    Icon(
+                                        imageVector = Icons.Default.Check,
+                                        contentDescription = null
+                                    )
+                                }
+                            })
+                    }
+                }
+
+                LazyColumn {
+                    itemsIndexed(fruitList) { index, fruit ->
+                        FruitListItem(state, fruit, onIntent)
+                    }
                 }
             }
         }
@@ -216,34 +209,35 @@ fun FruitListItem(
     fruit: Fruit,
     onIntent: (ListIntent) -> Unit
 ) {
-    val nutrition = state.nutrition
+    with(state) {
 
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier
-            .padding(vertical = 3.dp)
-            .height(60.dp)
-            .fillMaxWidth()
-            .background(Color.White)
-            .clickable {
-                onIntent(ListIntent.OnFruitClick(fruit.name))
-            }
-    ) {
-
-        Text(
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
-                .padding(vertical = 5.dp, horizontal = 36.dp),
-            fontSize = 22.sp,
-            text = fruit.name
-        )
+                .padding(vertical = 3.dp)
+                .height(60.dp)
+                .fillMaxWidth()
+                .background(Color.White)
+                .clickable {
+                    onIntent(ListIntent.OnFruitClick(fruit.name))
+                }
+        ) {
 
-        Text(
-            modifier = Modifier
-                .padding(vertical = 5.dp, horizontal = 46.dp),
-            fontSize = 22.sp,
-            text = fruit.nutritions[nutrition].toString()
-        )
+            Text(
+                modifier = Modifier
+                    .padding(vertical = 5.dp, horizontal = 36.dp),
+                fontSize = 22.sp,
+                text = fruit.name
+            )
+
+            Text(
+                modifier = Modifier
+                    .padding(vertical = 5.dp, horizontal = 46.dp),
+                fontSize = 22.sp,
+                text = fruit.nutritions[nutrition].toString()
+            )
+        }
     }
 }
 

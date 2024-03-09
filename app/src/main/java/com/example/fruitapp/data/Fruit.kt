@@ -1,5 +1,7 @@
 package com.example.fruitapp.data
 
+import com.example.fruitapp.ui.list.NutritionOptions
+
 data class Fruit(
     val family: String,
     val genus: String,
@@ -16,14 +18,13 @@ data class Nutritions(
     val protein: Double,
     val sugar: Double
 ) {
-    operator fun get(nutrition: String): Any? {
+    operator fun get(nutrition: NutritionOptions): Any {
         return when (nutrition) {
-            "Calories" -> calories
-            "Carbohydrates" -> carbohydrates
-            "Fat" -> fat
-            "Protein" -> protein
-            "Sugar" -> sugar
-            else -> null
+            NutritionOptions.Calories -> calories
+            NutritionOptions.Carbohydrates -> carbohydrates
+            NutritionOptions.Fat -> fat
+            NutritionOptions.Protein -> protein
+            NutritionOptions.Sugar -> sugar
         }
     }
 }

@@ -1,21 +1,27 @@
 package com.example.fruitapp.ui.details
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -23,20 +29,19 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.example.fruitapp.R
 import com.example.fruitapp.data.Fruit
 import com.example.fruitapp.data.Nutritions
-import com.example.fruitapp.nav.Screen
+import com.example.fruitapp.ui.list.NutritionOptions
 import com.example.fruitapp.ui.theme.FruitAppTheme
 import com.example.fruitapp.ui.theme.Green
 
@@ -46,27 +51,16 @@ fun DetailsScreen(viewModel: DetailsViewModel = hiltViewModel()) {
     DetailsScreen(state, viewModel::onIntent)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DetailsScreen(
     state: DetailsState,
     onIntent: (DetailsIntent) -> Unit
 ) {
-
     val fruit = rememberUpdatedState(state).value.fruit
-    val isLoading = state.isLoading
+    val fruitImage = rememberUpdatedState(state).value.fruitImage
 
-    val modifier = Modifier
-        .padding(vertical = 5.dp, horizontal = 16.dp)
-        .fillMaxWidth()
-
-    Image(
-        modifier = Modifier.fillMaxSize(),
-        bitmap = ImageBitmap.imageResource(R.drawable.background),
-        contentDescription = null,
-        contentScale = ContentScale.Crop,
-        alpha = 0.5f
-    )
-    if (isLoading)
+    if (state.isLoading)
         CircularProgressIndicator(
             modifier = Modifier
                 .fillMaxSize()
@@ -76,120 +70,132 @@ private fun DetailsScreen(
         )
 
     if (fruit != null)
-        Column(
+        Surface(
             modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
+            color = colorResource(id = R.color.creme)
         ) {
-
-            Box {
-                Text(
+            Column {
+                TopAppBar(
+                    colors = TopAppBarDefaults.smallTopAppBarColors(Green),
+                    title = {
+                        Text(
+                            modifier = Modifier.padding(horizontal = 90.dp),
+                            text = fruit.name
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = { onIntent(DetailsIntent.OnBackButtonClick) })
+                        {
+                            Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
+                        }
+                    })
+                Box(modifier = Modifier.size(500.dp, 400.dp)) {
+                    if (state.imageIsLoading)
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .size(50.dp)
+                                .wrapContentSize(align = Alignment.Center),
+                            color = Green
+                        )
+                    if (fruitImage != null)
+                        AsyncImage(
+                            model = fruitImage.photos[0].src.large2x,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(500.dp, 400.dp),
+                            contentScale = ContentScale.Crop
+                        )
+                }
+                TextButton(modifier = Modifier.height(35.dp),
+                    onClick = { DetailsIntent.OnPexelsClick }) {
+                    Text(text = stringResource(id = R.string.pexel))
+                }
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 50.dp),
-                    textAlign = TextAlign.Center,
-                    fontSize = 60.sp,
-                    fontWeight = FontWeight.Bold,
-                    text = fruit.name
-                )
-            }
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentSize(Alignment.TopStart)
-                    .padding(10.dp)
-                    .background(Color.White)
-                    .border(3.dp, Color.Gray, RoundedCornerShape(10.dp))
-            ) {
-
-                Column(modifier = Modifier.padding(10.dp)) {
-
-                    Text(
-                        modifier = modifier,
-                        fontSize = 25.sp,
-                        text = "${stringResource(R.string.family)} ${fruit.family}"
-                    )
-
-                    Text(
-                        modifier = modifier,
-                        textAlign = TextAlign.Start,
-                        fontSize = 25.sp,
-                        text = "${stringResource(R.string.order)} ${fruit.order}"
-                    )
-
-                    Text(
-                        modifier = modifier,
-                        textAlign = TextAlign.Start,
-                        fontSize = 25.sp,
-                        text = "${stringResource(R.string.genus)} ${fruit.genus}"
-                    )
+                        .background(Color.White)
+                ) {
+                    Column {
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(10.dp),
+                            fontSize = 30.sp,
+                            fontWeight = FontWeight.Bold,
+                            text = fruit.name
+                        )
+                        NutritionOptions.values().forEach { nutrition ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 10.dp, end = 30.dp, top = 5.dp, bottom = 5.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    fontSize = 22.sp,
+                                    text = nutrition.name
+                                )
+                                Text(
+                                    fontSize = 22.sp,
+                                    text = fruit.nutritions[nutrition].toString()
+                                )
+                            }
+                        }
+                    }
                 }
-            }
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentSize(Alignment.TopStart)
-                    .padding(10.dp)
-                    .background(Color.White)
-                    .border(3.dp, Color.Gray, RoundedCornerShape(10.dp))
-            ) {
-
-                Column(modifier = Modifier.padding(10.dp)) {
-
-                    Text(
-                        modifier = modifier,
-                        textAlign = TextAlign.Start,
-                        fontSize = 30.sp,
-                        fontWeight = FontWeight.Bold,
-                        text = stringResource(R.string.nutritions)
-                    )
-
-                    Text(
-                        modifier = modifier,
-                        textAlign = TextAlign.Start,
-                        fontSize = 25.sp,
-                        text = "${stringResource(R.string.calories)} ${fruit.nutritions.calories}"
-                    )
-
-                    Text(
-                        modifier = modifier,
-                        textAlign = TextAlign.Start,
-                        fontSize = 25.sp,
-                        text = "${stringResource(R.string.fat)} ${fruit.nutritions.fat}"
-                    )
-
-                    Text(
-                        modifier = modifier,
-                        textAlign = TextAlign.Start,
-                        fontSize = 25.sp,
-                        text = "${stringResource(R.string.sugar)} ${fruit.nutritions.sugar}"
-                    )
-
-                    Text(
-                        modifier = modifier,
-                        textAlign = TextAlign.Start,
-                        fontSize = 25.sp,
-                        text = "${stringResource(R.string.carbohydrates)} ${fruit.nutritions.carbohydrates}"
-                    )
-
-                    Text(
-                        modifier = modifier,
-                        textAlign = TextAlign.Start,
-                        fontSize = 25.sp,
-                        text = "${stringResource(R.string.protein)} ${fruit.nutritions.protein}"
-                    )
+                Box(
+                    modifier = Modifier
+                        .padding(top = 10.dp)
+                        .background(Color.White)
+                ) {
+                    Column {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 10.dp, end = 30.dp, top = 5.dp, bottom = 5.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                fontSize = 22.sp,
+                                text = stringResource(R.string.family)
+                            )
+                            Text(
+                                fontSize = 22.sp,
+                                text = fruit.family
+                            )
+                        }
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 10.dp, end = 30.dp, top = 5.dp, bottom = 5.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                fontSize = 22.sp,
+                                text = stringResource(R.string.order)
+                            )
+                            Text(
+                                fontSize = 22.sp,
+                                text = fruit.order
+                            )
+                        }
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 10.dp, end = 30.dp, top = 5.dp, bottom = 5.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                fontSize = 22.sp,
+                                text = stringResource(R.string.genus)
+                            )
+                            Text(
+                                fontSize = 22.sp,
+                                text = fruit.genus
+                            )
+                        }
+                    }
                 }
-            }
-
-            Button(modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, top = 20.dp),
-                shape = RoundedCornerShape(30),
-                colors = ButtonDefaults.buttonColors(Green),
-                onClick = { onIntent(DetailsIntent.OnBackButtonClick) }) {
-                Text(text = stringResource(R.string.back_button), color = Color.Black)
             }
         }
 }

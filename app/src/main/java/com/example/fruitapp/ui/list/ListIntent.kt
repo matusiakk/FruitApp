@@ -9,5 +9,5 @@ sealed class ListIntent {
     object OnSortingDismiss : ListIntent()
     object OnOptionClick : ListIntent()
     object OnOptionDismiss : ListIntent()
-    data class SelectOption(var option: String) : ListIntent()
+    data class SelectOption(var option: NutritionOptions) : ListIntent()
 }
