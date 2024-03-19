@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
@@ -74,7 +76,11 @@ private fun DetailsScreen(
             modifier = Modifier.fillMaxSize(),
             color = colorResource(id = R.color.creme)
         ) {
-            Column {
+            Column(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .fillMaxSize()
+            ) {
                 TopAppBar(
                     colors = TopAppBarDefaults.smallTopAppBarColors(Green),
                     title = {
@@ -145,7 +151,7 @@ private fun DetailsScreen(
                 }
                 Box(
                     modifier = Modifier
-                        .padding(top = 10.dp)
+                        .padding(vertical = 10.dp)
                         .background(Color.White)
                 ) {
                     Column {
