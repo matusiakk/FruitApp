@@ -7,5 +7,6 @@ data class DetailsState(
     var fruit: Fruit? = null,
     var isLoading: Boolean = false,
     var fruitImage: Image? = null,
-    var imageIsLoading: Boolean = false
+    var imageIsLoading: Boolean = false,
+    var isFav: Boolean = false
 )

@@ -14,18 +14,23 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import androidx.lifecycle.SavedStateHandle
+import com.example.fruitapp.data.Favorite
+import com.example.fruitapp.data.FavoriteDao
 import com.example.fruitapp.data.ImageApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.update
 
 @HiltViewModel
 class DetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val api: FruitApi,
-    private val imageApi: ImageApi
+    private val imageApi: ImageApi,
+    private val favoriteDao: FavoriteDao
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(DetailsState())
     val state = _state.asStateFlow()
+
 
     init {
         getFruitDetails(requireNotNull(savedStateHandle.get<String>("name")))
@@ -36,7 +41,32 @@ class DetailsViewModel @Inject constructor(
         when (intent) {
             is DetailsIntent.OnBackButtonClick -> onBackButtonClick()
             is DetailsIntent.OnPexelsClick -> onPexelsClick()
+            is DetailsIntent.OnFavoriteClick -> onFavoriteClick(intent.name)
         }
+    }
+
+    private fun onFavoriteClick(name: String) {
+        val favorite = Favorite(fruitName = name)
+        if (!state.value.isFav) {
+            viewModelScope.launch(Dispatchers.IO) {
+                try {
+                    favoriteDao.insertFav(favorite)
+                    _state.update { it.copy(isFav = true) }
+                } catch (e: Exception) {
+                    Log.e("VM", "insertFav", e)
+                }
+            }
+        } else {
+            viewModelScope.launch(Dispatchers.IO) {
+                try {
+                    favoriteDao.deleteFav(name)
+                    _state.update { it.copy(isFav = false) }
+                } catch (e: Exception) {
+                    Log.e("VM", "deleteFav", e)
+                }
+            }
+        }
+
     }
 
     private fun onPexelsClick() {
@@ -46,11 +76,13 @@ class DetailsViewModel @Inject constructor(
 
     private fun getFruitDetails(name: String) {
         _state.update { it.copy(isLoading = true) }
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
+                val isFav = favoriteDao.getFavByName(name) != null
                 _state.update {
                     it.copy(
-                        fruit = api.getFruitDetails(name)
+                        fruit = api.getFruitDetails(name),
+                        isFav = isFav
                     )
                 }
             } catch (e: Exception) {

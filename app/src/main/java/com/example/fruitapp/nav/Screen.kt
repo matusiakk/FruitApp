@@ -13,4 +13,13 @@ sealed class Screen(val route: String) {
             }
         }
     }
+
+    fun withOptionalArgs(favorite: Boolean? = null): String {
+        return buildString {
+            append(route)
+            if (favorite != null) {
+                append("?favorite=$favorite")
+            }
+        }
+    }
 }

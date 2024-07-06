@@ -61,14 +61,13 @@ private fun ListScreen(
 
     with(state) {
 
-        if (isLoading)
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .size(50.dp)
-                    .wrapContentSize(align = Alignment.Center),
-                color = Green
-            )
+        if (isLoading) CircularProgressIndicator(
+            modifier = Modifier
+                .fillMaxSize()
+                .size(50.dp)
+                .wrapContentSize(align = Alignment.Center),
+            color = Green
+        )
 
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -76,30 +75,41 @@ private fun ListScreen(
         ) {
 
             Column {
-                TopAppBar(
-                    colors = TopAppBarDefaults.smallTopAppBarColors(Green),
+                TopAppBar(colors = TopAppBarDefaults.smallTopAppBarColors(Green),
                     title = {
                         Text(
-                            modifier = Modifier.padding(horizontal = 90.dp),
+                            modifier = Modifier.padding(horizontal = 70.dp),
                             text = stringResource(R.string.list_header)
                         )
-                    },
-                    navigationIcon = {
-                        IconButton(onClick = { onIntent(ListIntent.OnBackClick) })
-                        {
-                            Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
+                    }, navigationIcon = {
+                        IconButton(onClick = { onIntent(ListIntent.OnBackClick) }) {
+                            Icon(imageVector = Icons.Default.ArrowBack,
+                                contentDescription = "Back")
                         }
-                    },
-                    actions = {
+                    }, actions = {
+                        IconButton(onClick = { onIntent(ListIntent.OnFavoriteClick) }) {
+                            if (state.showFavorite) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.favorite),
+                                    contentDescription = stringResource(id = R.string.favorite),
+                                    tint = Color.Black
+                                )
+                            } else {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.favorite_border),
+                                    contentDescription = stringResource(id = R.string.favorite),
+                                    tint = Color.Black
+                                )
+                            }
+                        }
                         IconButton(onClick = { onIntent(ListIntent.OnSortingClick) }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.sorting),
-                                contentDescription = "Sorting",
+                                contentDescription = stringResource(id = R.string.sorting),
                                 tint = Color.Black
                             )
                         }
-                    }
-                )
+                    })
                 DropdownMenu(
                     modifier = Modifier.background(Color.White),
                     expanded = isSortingMenuVisible,
@@ -108,36 +118,34 @@ private fun ListScreen(
                 ) {
                     DropdownMenuItem(modifier = Modifier.background(Color.White),
                         text = {
-                            Text(
-                                fontSize = 20.sp,
-                                text = stringResource(id = R.string.ascending)
-                            )
-                        },
-                        onClick = { onIntent(ListIntent.OnAscendingClick) },
+                        Text(
+                            fontSize = 20.sp,
+                            text = stringResource(id = R.string.ascending)
+                        )
+                    }, onClick = { onIntent(ListIntent.OnAscendingClick) },
                         trailingIcon = {
-                            if (sortingOption == 1) {
-                                Icon(
-                                    imageVector = Icons.Default.Check,
-                                    contentDescription = null
-                                )
-                            }
-                        })
+                        if (sortingOption == 1) {
+                            Icon(
+                                imageVector = Icons.Default.Check,
+                                contentDescription = null
+                            )
+                        }
+                    })
                     DropdownMenuItem(modifier = Modifier.background(Color.White),
                         text = {
-                            Text(
-                                fontSize = 20.sp,
-                                text = stringResource(id = R.string.descending)
-                            )
-                        },
-                        onClick = { onIntent(ListIntent.OnDescendingClick) },
+                        Text(
+                            fontSize = 20.sp,
+                            text = stringResource(id = R.string.descending)
+                        )
+                    }, onClick = { onIntent(ListIntent.OnDescendingClick) },
                         trailingIcon = {
-                            if (sortingOption == 2) {
-                                Icon(
-                                    imageVector = Icons.Default.Check,
-                                    contentDescription = null
-                                )
-                            }
-                        })
+                        if (sortingOption == 2) {
+                            Icon(
+                                imageVector = Icons.Default.Check,
+                                contentDescription = null
+                            )
+                        }
+                    })
                 }
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -147,8 +155,7 @@ private fun ListScreen(
                         .fillMaxWidth()
                 ) {
                     Text(
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp),
+                        modifier = Modifier.padding(horizontal = 16.dp),
                         fontSize = 20.sp,
                         text = stringResource(R.string.name)
                     )
@@ -177,8 +184,7 @@ private fun ListScreen(
                         DropdownMenuItem(modifier = Modifier.background(Color.White),
                             text = {
                                 Text(
-                                    fontSize = 20.sp,
-                                    text = option.name
+                                    fontSize = 20.sp, text = option.name
                                 )
                             },
                             onClick = { onIntent(ListIntent.SelectOption(option)) },
@@ -211,8 +217,7 @@ fun FruitListItem(
 ) {
     with(state) {
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
+        Row(verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .padding(vertical = 3.dp)
@@ -221,19 +226,16 @@ fun FruitListItem(
                 .background(Color.White)
                 .clickable {
                     onIntent(ListIntent.OnFruitClick(fruit.name))
-                }
-        ) {
+                }) {
 
             Text(
-                modifier = Modifier
-                    .padding(vertical = 5.dp, horizontal = 36.dp),
+                modifier = Modifier.padding(vertical = 5.dp, horizontal = 36.dp),
                 fontSize = 22.sp,
                 text = fruit.name
             )
 
             Text(
-                modifier = Modifier
-                    .padding(vertical = 5.dp, horizontal = 46.dp),
+                modifier = Modifier.padding(vertical = 5.dp, horizontal = 46.dp),
                 fontSize = 22.sp,
                 text = fruit.nutritions[nutrition].toString()
             )
@@ -255,8 +257,7 @@ fun ListScreenPreview() {
             fat = 1.4,
             protein = 5.7,
             sugar = 1.5
-        ),
-        order = "order"
+        ), order = "order"
     )
     val state = ListState(
         fruitList = listOf(fruit, fruit, fruit)

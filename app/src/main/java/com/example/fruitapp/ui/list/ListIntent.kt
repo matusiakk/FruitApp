@@ -10,4 +10,5 @@ sealed class ListIntent {
     object OnOptionClick : ListIntent()
     object OnOptionDismiss : ListIntent()
     data class SelectOption(var option: NutritionOptions) : ListIntent()
+    object OnFavoriteClick : ListIntent()
 }

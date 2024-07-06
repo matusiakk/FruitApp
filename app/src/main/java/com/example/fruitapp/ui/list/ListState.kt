@@ -8,7 +8,8 @@ data class ListState(
     var isLoading: Boolean = false,
     var isSortingMenuVisible: Boolean = false,
     var sortingOption: Int = 0,
-    var isOptionMenuVisible: Boolean = false
+    var isOptionMenuVisible: Boolean = false,
+    var showFavorite: Boolean = false
 
 )
 

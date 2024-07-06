@@ -41,7 +41,12 @@ class StartViewModel @Inject constructor(
             is StartIntent.OnListButtonClick -> onListButtonClick()
             is StartIntent.OnCloseClick -> onCloseClick()
             is StartIntent.OnSearchItemClick -> onSearchItemClick(intent.name)
+            is StartIntent.OnFavoriteClick -> onFavoriteClick()
         }
+    }
+
+    private fun onFavoriteClick() {
+        Navigator.sendEvent(NavEvent.NavigateTo(Screen.ListScreen.withOptionalArgs(true)))
     }
 
     private fun onSearchItemClick(name: String) {

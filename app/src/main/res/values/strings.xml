@@ -18,4 +18,6 @@
     <string name="pexel">Photos provided by Pexels</string>
     <string name="favorite">Favorite</string>
     <string name="about_app">About app</string>
+    <string name="quiz">Quiz</string>
+    <string name="sorting">Sorting</string>
 </resources>

@@ -5,6 +5,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.fruitapp.ui.details.DetailsScreen
 import com.example.fruitapp.ui.list.ListScreen
 import com.example.fruitapp.ui.start.StartScreen
@@ -35,7 +36,9 @@ fun NavigationComponent(navController: NavHostController) {
             DetailsScreen()
         }
 
-        composable(route = Screen.ListScreen.route) {
+        composable(route = Screen.ListScreen.route + "?favorite={favorite}",
+            arguments = listOf(navArgument("favorite") { defaultValue = false })
+        ) {
             ListScreen()
         }
     }

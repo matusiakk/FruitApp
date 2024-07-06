@@ -19,7 +19,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -189,7 +188,8 @@ private fun StartScreen(
                             modifier = Modifier
                                 .size(50.dp)
                         )
-                        Text(
+                        Text(modifier = Modifier
+                            .padding(top = 10.dp),
                             text = stringResource(R.string.list_button),
                             color = Color.Black,
                             fontSize = 20.sp
@@ -206,11 +206,25 @@ private fun StartScreen(
                         width = 1.dp,
                         color = Green
                     ),
-                    onClick = { /*TODO*/ }) {
-                    Text(
-                        text = "TODO",
-                        color = Color.Black
-                    )
+                    onClick = { onIntent(StartIntent.OnFavoriteClick) }) {
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.favorite_border),
+                            contentDescription = "",
+                            tint = Color.Black,
+                            modifier = Modifier
+                                .size(50.dp)
+                        )
+                        Text(modifier = Modifier
+                            .padding(top = 10.dp),
+                            text = stringResource(R.string.favorite),
+                            color = Color.Black,
+                            fontSize = 20.sp
+                        )
+                    }
                 }
             }
             Row(
@@ -229,10 +243,24 @@ private fun StartScreen(
                         color = Green
                     ),
                     onClick = { onIntent(StartIntent.OnListButtonClick) }) {
-                    Text(
-                        text = "TODO",
-                        color = Color.Black
-                    )
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.quiz),
+                            contentDescription = "",
+                            tint = Color.Black,
+                            modifier = Modifier
+                                .size(50.dp)
+                        )
+                        Text(modifier = Modifier
+                            .padding(top = 10.dp),
+                            text = stringResource(R.string.quiz),
+                            color = Color.Black,
+                            fontSize = 20.sp
+                        )
+                    }
                 }
                 Button(modifier = Modifier
                     .padding(horizontal = 8.dp)
@@ -245,10 +273,24 @@ private fun StartScreen(
                         color = Green
                     ),
                     onClick = { }) {
-                    Text(
-                        text = "TODO",
-                        color = Color.Black
-                    )
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.baseline_question_mark_24),
+                            contentDescription = "",
+                            tint = Color.Black,
+                            modifier = Modifier
+                                .size(50.dp)
+                        )
+                        Text(modifier = Modifier
+                            .padding(top = 10.dp),
+                            text = stringResource(R.string.about_app),
+                            color = Color.Black,
+                            fontSize = 20.sp
+                        )
+                    }
                 }
             }
         }
