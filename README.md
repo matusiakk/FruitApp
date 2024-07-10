@@ -1,5 +1,15 @@
 # FruitApp
 
-The FruitApp is a simple sample mobile application project created for learning and demonstrating fundamental programming concepts using the Kotlin language and Jetpack Compose technology. The application focuses on displaying information about various fruits and enables navigation between screens. Fruit data is fetched from an external API using the Retrofit library. The app follows the MVI architecture.
+FruitApp is a mobile application created to train and develop my programming skills. Includes pictures and details of fruits. Ability to search by name, sort, filter and save favorites. 
+Details are from https://fruityvice.com/
+Photos are from https://www.pexels.com/
+
+The apps were created using:
+Kotlin
+Jetpack Compose
+Retrofit
+Hilt
+Room database
+MVI architecture
 
 ![Screens](https://github.com/matusiakk/FruitApp/blob/master/FruitApp_screens.png)
