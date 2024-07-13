@@ -42,7 +42,12 @@ class StartViewModel @Inject constructor(
             is StartIntent.OnCloseClick -> onCloseClick()
             is StartIntent.OnSearchItemClick -> onSearchItemClick(intent.name)
             is StartIntent.OnFavoriteClick -> onFavoriteClick()
+            is StartIntent.OnAboutAppClick -> onAboutAppClick()
         }
+    }
+
+    private fun onAboutAppClick() {
+        Navigator.sendEvent(NavEvent.NavigateTo(Screen.AboutScreen.route))
     }
 
     private fun onFavoriteClick() {
@@ -77,7 +82,7 @@ class StartViewModel @Inject constructor(
             _state.update {
                 it.copy(
                     filteredFruitList = fruitList.filter {
-                        it.name.contains(text, ignoreCase = true)
+                         it.name.contains(text, ignoreCase = true)
                     })
             }
         else _state.update { it.copy(filteredFruitList = emptyList()) }

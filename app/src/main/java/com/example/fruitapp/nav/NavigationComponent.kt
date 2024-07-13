@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.fruitapp.ui.about.AboutScreen
 import com.example.fruitapp.ui.details.DetailsScreen
 import com.example.fruitapp.ui.list.ListScreen
 import com.example.fruitapp.ui.start.StartScreen
@@ -40,6 +41,10 @@ fun NavigationComponent(navController: NavHostController) {
             arguments = listOf(navArgument("favorite") { defaultValue = false })
         ) {
             ListScreen()
+        }
+
+        composable(route= Screen.AboutScreen.route){
+            AboutScreen()
         }
     }
 }

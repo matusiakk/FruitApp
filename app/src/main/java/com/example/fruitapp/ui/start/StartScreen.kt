@@ -272,7 +272,7 @@ private fun StartScreen(
                         width = 1.dp,
                         color = Green
                     ),
-                    onClick = { }) {
+                    onClick = { onIntent(StartIntent.OnAboutAppClick)}) {
                     Column(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally

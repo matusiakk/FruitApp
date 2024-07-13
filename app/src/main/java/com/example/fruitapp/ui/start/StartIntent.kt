@@ -6,6 +6,7 @@ sealed class StartIntent {
     object OnListButtonClick : StartIntent()
     object OnCloseClick : StartIntent()
     data class OnSearchItemClick(val name: String) : StartIntent()
+    object OnAboutAppClick : StartIntent()
     object OnFavoriteClick: StartIntent()
 
 }

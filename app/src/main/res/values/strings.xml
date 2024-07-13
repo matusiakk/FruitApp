@@ -20,4 +20,11 @@
     <string name="about_app">About app</string>
     <string name="quiz">Quiz</string>
     <string name="sorting">Sorting</string>
+    <string name="app_name_label">Application name</string>
+    <string name="version_label">Version</string>
+    <string name="version">1.0.0</string>
+    <string name="data_source">Data source</string>
+    <string name="data_url">https://fruityvice.com/</string>
+    <string name="pictures_source">Pictures source</string>
+    <string name="pictures_url">https://www.pexels.com/</string>
 </resources>
