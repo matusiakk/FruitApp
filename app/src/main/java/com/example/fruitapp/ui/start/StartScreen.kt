@@ -242,7 +242,7 @@ private fun StartScreen(
                         width = 1.dp,
                         color = Green
                     ),
-                    onClick = { onIntent(StartIntent.OnListButtonClick) }) {
+                    onClick = { onIntent(StartIntent.OnQuizButtonClick) }) {
                     Column(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
@@ -315,8 +315,7 @@ fun StartScreenPreview() {
                 sugar = 1.5
             ),
             order = "order"
-        ),
-        //showMessage = false
+        )
     )
 
     FruitAppTheme {

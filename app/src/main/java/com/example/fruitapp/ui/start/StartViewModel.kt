@@ -43,7 +43,12 @@ class StartViewModel @Inject constructor(
             is StartIntent.OnSearchItemClick -> onSearchItemClick(intent.name)
             is StartIntent.OnFavoriteClick -> onFavoriteClick()
             is StartIntent.OnAboutAppClick -> onAboutAppClick()
+            is StartIntent.OnQuizButtonClick -> onQuizButtonClick()
         }
+    }
+
+    private fun onQuizButtonClick() {
+        Navigator.sendEvent(NavEvent.NavigateTo(Screen.QuizScreen.route))
     }
 
     private fun onAboutAppClick() {

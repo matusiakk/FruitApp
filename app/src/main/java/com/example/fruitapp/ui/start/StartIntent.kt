@@ -8,5 +8,6 @@ sealed class StartIntent {
     data class OnSearchItemClick(val name: String) : StartIntent()
     object OnAboutAppClick : StartIntent()
     object OnFavoriteClick: StartIntent()
+    object OnQuizButtonClick: StartIntent()
 
 }

@@ -221,7 +221,7 @@ fun FruitListItem(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .padding(vertical = 3.dp)
-                .height(60.dp)
+                .height(56.dp)
                 .fillMaxWidth()
                 .background(Color.White)
                 .clickable {
@@ -229,13 +229,13 @@ fun FruitListItem(
                 }) {
 
             Text(
-                modifier = Modifier.padding(vertical = 5.dp, horizontal = 36.dp),
+                modifier = Modifier.padding(vertical = 8.dp, horizontal = 36.dp),
                 fontSize = 22.sp,
                 text = fruit.name
             )
 
             Text(
-                modifier = Modifier.padding(vertical = 5.dp, horizontal = 46.dp),
+                modifier = Modifier.padding(vertical = 8.dp, horizontal = 46.dp),
                 fontSize = 22.sp,
                 text = fruit.nutritions[nutrition].toString()
             )
