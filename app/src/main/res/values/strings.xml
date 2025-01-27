@@ -29,4 +29,37 @@
     <string name="pictures_url">https://www.pexels.com/</string>
     <string name="quiz_header">What Fruit Are You?</string>
     <string name="check">Check</string>
+    <string name="question1">1. How would you describe your personality?</string>
+    <string name="answer1a">a) Energetic and cheerful</string>
+    <string name="answer1b">b) Calm and balanced</string>
+    <string name="answer1c">c) Sensual and mysterious</string>
+    <string name="answer1d">d) Caring and warm</string>
+    <string name="question2">2. How do you spend your free time?</string>
+    <string name="answer2a">a) Playing sports or exercising</string>
+    <string name="answer2b">b) Reading books or meditating</string>
+    <string name="answer2c">c) Exploring new places and discovering the unknown</string>
+    <string name="answer2d">d) Spending time with family and friends</string>
+    <string name="question3">3. What is your favorite type of food?</string>
+    <string name="answer3a">a) Spicy and bold dishes</string>
+    <string name="answer3b">b) Light and healthy meals</string>
+    <string name="answer3c">c) Exotic and unusual flavors</string>
+    <string name="answer3d">d) Traditional, home-cooked food</string>
+    <string name="question4">4. What do you value most in other people?</string>
+    <string name="answer4a">a) Sense of humor and optimism</string>
+    <string name="answer4b">b) Calmness and composure</string>
+    <string name="answer4c">c) Creativity and originality</string>
+    <string name="answer4d">d) Empathy and care</string>
+    <string name="question5">5. How do you react to stress?</string>
+    <string name="answer5a">a) I find active ways to release tension</string>
+    <string name="answer5b">b) I try to stay calm and meditate</string>
+    <string name="answer5c">c) I seek new, exciting challenges</string>
+    <string name="answer5d">d) I seek support from loved ones</string>
+    <string name="result1">You are an Orange!\n
+        You are full of energy and optimism. Your presence gives strength and inspiration to others.</string>
+    <string name="result2">You are a Pear!\n
+    You are calm and balanced, making people eager to seek your support and advice.</string>
+    <string name="result3">You are a Pineapple!\n
+    You are mysterious and exotic, enjoying challenges and new experiences. Your creativity amazes others.</string>
+    <string name="result4">"You are an Apple!\n
+    You are warm and caring, always ready to help and support. Your home is a place full of love and warmth.</string>
 </resources>

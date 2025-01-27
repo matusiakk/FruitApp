@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.fruitapp.R
-import com.example.fruitapp.data.Question
 import com.example.fruitapp.ui.theme.FruitAppTheme
 import com.example.fruitapp.ui.theme.Green
 
@@ -79,7 +78,7 @@ private fun QuizScreen(
             )
             if (!state.showResult) {
                 LazyColumn {
-                    itemsIndexed(state.questions) { index, question ->
+                    itemsIndexed(QuizQuestions.values()) { index, question ->
                         QuestionItem(question, onIntent, index, state)
                     }
                 }
@@ -103,7 +102,7 @@ private fun QuizScreen(
                     Text(
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                         fontSize = 24.sp,
-                        text = state.quizResults[state.result]
+                        text = stringResource(id = state.result)
                     )
                 }
 
@@ -114,7 +113,7 @@ private fun QuizScreen(
 
 @Composable
 fun QuestionItem(
-    question: Question,
+    question: QuizQuestions,
     onIntent: (QuizIntent) -> Unit,
     questionIndex: Int,
     state: QuizState
@@ -128,30 +127,52 @@ fun QuestionItem(
         Text(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
             fontSize = 24.sp,
-            text = question.question
+            text = stringResource(id = question.question)
         )
     }
-    if (question.expanded)
+    if (state.questionsExpanded[questionIndex])
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(Color.White)
         ) {
-            question.answers.forEachIndexed { answerIndex, answer ->
-                Text(
-                    text = answer,
-                    fontSize = 20.sp,
-                    fontWeight = if (state.selectedAnswers[questionIndex] == answerIndex) FontWeight.Bold
-                    else FontWeight.Normal,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
-                        .clickable {
-                            onIntent(QuizIntent.OnAnswerClick(questionIndex, answerIndex))
-                        }
+            listOf(
+                question.answerA,
+                question.answerB,
+                question.answerC,
+                question.answerD
+            ).forEachIndexed { index, answerId ->
+                AnswerOption(
+                    answerId = answerId,
+                    answerIndex = index,
+                    onIntent = onIntent,
+                    state = state,
+                    questionIndex = questionIndex
                 )
             }
         }
+}
+
+@Composable
+fun AnswerOption(
+    answerId: Int,
+    answerIndex: Int,
+    onIntent: (QuizIntent) -> Unit,
+    state: QuizState,
+    questionIndex: Int
+) {
+    Text(
+        text = stringResource(id = answerId),
+        fontSize = 20.sp,
+        fontWeight = if (state.selectedAnswers[questionIndex] == answerIndex) FontWeight.Bold
+        else FontWeight.Normal,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .clickable {
+                onIntent(QuizIntent.OnAnswerClick(questionIndex, answerIndex))
+            }
+    )
 
 }
 
@@ -159,12 +180,7 @@ fun QuestionItem(
 @Preview
 @Composable
 fun AboutScreenPreview() {
-    val question = Question(
-        "Pytanie1",
-        listOf("odpowiedźA", "odpowiedźB", "odpowiedzC", "odpowiedźD"),
-        true
-    )
-    val state = QuizState(questions = listOf(question, question, question))
+    val state = QuizState()
     FruitAppTheme {
         QuizScreen(state) {}
     }

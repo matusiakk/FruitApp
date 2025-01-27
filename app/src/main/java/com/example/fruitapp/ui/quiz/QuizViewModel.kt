@@ -27,8 +27,8 @@ class QuizViewModel : ViewModel() {
 
     private fun onQuestionClick(questionIndex: Int) {
         _state.update {
-            it.copy(questions = it.questions.mapIndexed { i, question ->
-                if (i == questionIndex) question.copy(expanded = !question.expanded) else question
+            it.copy(questionsExpanded = List(it.questionsExpanded.size) { i ->
+                i == questionIndex
             })
         }
 
@@ -40,11 +40,11 @@ class QuizViewModel : ViewModel() {
         _state.update {
             it.copy(
                 selectedAnswers = updatedSelectedAnswers,
-                questions = it.questions.mapIndexed { i, question ->
+                questionsExpanded = List(it.questionsExpanded.size) { i ->
                     when (i) {
-                        questionIndex -> question.copy(expanded = false)
-                        questionIndex + 1 -> question.copy(expanded = true)
-                        else -> question
+                        questionIndex -> false
+                        questionIndex + 1 -> true
+                        else -> false
                     }
                 }
             )
@@ -53,14 +53,11 @@ class QuizViewModel : ViewModel() {
 
     private fun onCheckClick() {
         val answers = state.value.selectedAnswers
-        val answersA = answers.count { it == 1 }
-        val answersB = answers.count { it == 2 }
-        val answersC = answers.count { it == 3 }
-        val answersD = answers.count { it == 4 }
+        val result = QuizQuestions.getQuizResult(answers)
 
         _state.update {
             it.copy(
-                result = maxOf(answersA, answersB, answersC, answersD),
+                result = result,
                 showResult = true
             )
         }
