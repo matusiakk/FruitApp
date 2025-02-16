@@ -7,8 +7,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class QuizViewModel : ViewModel() {
-    private val _state = MutableStateFlow(QuizState())
+class QuizViewModel(initialState: QuizState) : ViewModel() {
+    private val _state = MutableStateFlow(initialState)
     val state = _state.asStateFlow()
 
 
@@ -31,7 +31,6 @@ class QuizViewModel : ViewModel() {
                 i == questionIndex
             })
         }
-
     }
 
     private fun onAnswerClick(questionIndex: Int, answerIndex: Int) {

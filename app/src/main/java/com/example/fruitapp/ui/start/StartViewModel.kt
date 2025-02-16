@@ -16,10 +16,11 @@ import kotlinx.coroutines.flow.update
 
 @HiltViewModel
 class StartViewModel @Inject constructor(
-    private val api: FruitApi
+    private val api: FruitApi,
+    initialState: StartState
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(StartState())
+    private val _state = MutableStateFlow(initialState)
     val state: StateFlow<StartState> = _state
 
     private var fruitList = emptyList<Fruit>()

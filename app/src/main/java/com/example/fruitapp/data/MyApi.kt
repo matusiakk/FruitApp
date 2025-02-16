@@ -1,5 +1,6 @@
 package com.example.fruitapp.data
 
+import com.example.fruitapp.ui.start.StartState
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -37,6 +38,10 @@ object MyApi {
             .baseUrl(IMAGE_BASE_URL)
             .build()
             .create(ImageApi::class.java)
+    }
+    @Provides
+    fun provideStartState(): StartState {
+        return StartState()
     }
 }
 
