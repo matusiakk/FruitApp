@@ -1,5 +1,8 @@
 package com.example.fruitapp.ui.details
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -32,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -51,14 +55,16 @@ import com.example.fruitapp.ui.theme.Green
 @Composable
 fun DetailsScreen(viewModel: DetailsViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsState()
-    DetailsScreen(state, viewModel::onIntent)
+    val context = LocalContext.current
+    DetailsScreen(state, viewModel::onIntent, context)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DetailsScreen(
     state: DetailsState,
-    onIntent: (DetailsIntent) -> Unit
+    onIntent: (DetailsIntent) -> Unit,
+    context: Context
 ) {
     val fruit = rememberUpdatedState(state).value.fruit
     val fruitImage = rememberUpdatedState(state).value.fruitImage
@@ -126,7 +132,7 @@ private fun DetailsScreen(
             }
             TextButton(
                 modifier = Modifier.height(35.dp),
-                onClick = { DetailsIntent.OnPexelsClick }) {
+                onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.pexels.com/"))) }) {
                 Text(text = stringResource(id = R.string.pexel))
             }
             Box(
@@ -236,6 +242,6 @@ fun DetailsScreenPreview() {
         )
     )
     FruitAppTheme {
-        DetailsScreen(state) {}
+        DetailsScreen()
     }
 }

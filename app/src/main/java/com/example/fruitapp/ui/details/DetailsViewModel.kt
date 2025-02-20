@@ -1,7 +1,5 @@
 package com.example.fruitapp.ui.details
 
-import android.content.Intent
-import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -40,7 +38,6 @@ class DetailsViewModel @Inject constructor(
     fun onIntent(intent: DetailsIntent) {
         when (intent) {
             is DetailsIntent.OnBackButtonClick -> onBackButtonClick()
-            is DetailsIntent.OnPexelsClick -> onPexelsClick()
             is DetailsIntent.OnFavoriteClick -> onFavoriteClick(intent.name)
         }
     }
@@ -67,10 +64,6 @@ class DetailsViewModel @Inject constructor(
             }
         }
 
-    }
-
-    private fun onPexelsClick() {
-        Intent(Intent.ACTION_VIEW, Uri.parse("https://www.pexels.com/"))
     }
 
 
