@@ -132,7 +132,7 @@ class DetailsViewModelTest {
             //Assert
             verify { favoriteDao.deleteFav("orange") }
         }
-
+    
 
     @Test
     fun `should add fruit to favorites after favorite button click when fruit is not in favorites`() =
