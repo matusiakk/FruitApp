@@ -3,7 +3,6 @@ package com.example.fruitapp.ui.details
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.fruitapp.data.FruitApi
 import com.example.fruitapp.nav.NavEvent
 import com.example.fruitapp.nav.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,18 +11,16 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import androidx.lifecycle.SavedStateHandle
-import com.example.fruitapp.data.Favorite
-import com.example.fruitapp.data.FavoriteDao
-import com.example.fruitapp.data.ImageApi
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.update
 
 @HiltViewModel
 class DetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val api: FruitApi,
-    private val imageApi: ImageApi,
-    private val favoriteDao: FavoriteDao
+    private val getFruitDetailsUseCase: GetFruitDetailsUseCase,
+    private val getFruitImageUseCase: GetFruitImageUseCase,
+    private val getFavoriteByNameUseCase: GetFavoriteByNameUseCase,
+    private val addToFavoriteUseCase: AddToFavoriteUseCase,
+    private val removeFromFavoriteUseCase: RemoveFromFavoriteUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(DetailsState())
@@ -43,20 +40,19 @@ class DetailsViewModel @Inject constructor(
     }
 
     private fun onFavoriteClick(name: String) {
-        val favorite = Favorite(fruitName = name)
         if (!state.value.isFav) {
-            viewModelScope.launch(Dispatchers.IO) {
+            viewModelScope.launch {
                 try {
-                    favoriteDao.insertFav(favorite)
+                    addToFavoriteUseCase(name)
                     _state.update { it.copy(isFav = true) }
                 } catch (e: Exception) {
                     Log.e("VM", "insertFav", e)
                 }
             }
         } else {
-            viewModelScope.launch(Dispatchers.IO) {
+            viewModelScope.launch {
                 try {
-                    favoriteDao.deleteFav(name)
+                    removeFromFavoriteUseCase(name)
                     _state.update { it.copy(isFav = false) }
                 } catch (e: Exception) {
                     Log.e("VM", "deleteFav", e)
@@ -69,12 +65,12 @@ class DetailsViewModel @Inject constructor(
 
     private fun getFruitDetails(name: String) {
         _state.update { it.copy(isLoading = true) }
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             try {
-                val isFav = favoriteDao.getFavByName(name) != null
+                val isFav = getFavoriteByNameUseCase(name) != null
                 _state.update {
                     it.copy(
-                        fruit = api.getFruitDetails(name),
+                        fruit = getFruitDetailsUseCase(name),
                         isFav = isFav
                     )
                 }
@@ -89,7 +85,7 @@ class DetailsViewModel @Inject constructor(
         _state.update { it.copy(imageIsLoading = true) }
         viewModelScope.launch {
             try {
-                _state.update { it.copy(fruitImage = imageApi.getImage(name)) }
+                _state.update { it.copy(fruitImage = getFruitImageUseCase(name)) }
                 Log.e("IMG", _state.value.fruitImage.toString())
             } catch (e: Exception) {
                 Log.e("VM", "getImage", e)

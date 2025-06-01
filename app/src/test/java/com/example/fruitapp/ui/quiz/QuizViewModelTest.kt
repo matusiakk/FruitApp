@@ -6,8 +6,8 @@ import com.example.fruitapp.nav.Navigator
 import io.mockk.mockkObject
 import io.mockk.verify
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.*
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Test
 import com.example.fruitapp.R
 
 class QuizViewModelTest {

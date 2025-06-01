@@ -16,7 +16,7 @@ interface FavoriteDao {
     fun getAllFav(): List<String>
 
     @Query("SELECT * FROM favorite WHERE fruit_name = :name")
-    fun getFavByName(name: String): Favorite
+    fun getFavByName(name: String): Favorite?
 
 
 }

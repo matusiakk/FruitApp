@@ -3,13 +3,11 @@ package com.example.fruitapp.ui.list
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.fruitapp.data.FavoriteDao
-import com.example.fruitapp.data.FruitApi
 import com.example.fruitapp.nav.NavEvent
 import com.example.fruitapp.nav.Navigator
 import com.example.fruitapp.nav.Screen
+import com.example.fruitapp.ui.start.GetFruitListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -18,8 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ListViewModel @Inject constructor(
-    private val api: FruitApi,
-    private val favoriteDao: FavoriteDao,
+    private val getFruitListUseCase: GetFruitListUseCase,
+    private val getFavoriteUseCase: GetFavoriteUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -36,7 +34,7 @@ class ListViewModel @Inject constructor(
             _state.update { it.copy(isLoading = true) }
             _state.update {
                 it.copy(
-                    fruitList = api.getList(),
+                    fruitList = getFruitListUseCase(),
                     isLoading = false,
                     showFavorite = false
                 )
@@ -62,14 +60,10 @@ class ListViewModel @Inject constructor(
 
     private fun onFavoriteClick() {
         if (!state.value.showFavorite) {
-            viewModelScope.launch(Dispatchers.IO) {
-                val favoriteNamesList = favoriteDao.getAllFav()
-                val favoriteFruitList = state.value.fruitList.filter {
-                    it.name in favoriteNamesList
-                }
+            viewModelScope.launch {
                 _state.update {
                     it.copy(
-                        fruitList = favoriteFruitList,
+                        fruitList = getFavoriteUseCase(state.value.fruitList),
                         showFavorite = true
                     )
                 }

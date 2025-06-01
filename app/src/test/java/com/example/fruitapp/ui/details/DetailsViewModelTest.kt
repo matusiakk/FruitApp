@@ -3,18 +3,18 @@ package com.example.fruitapp.ui.details
 import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import com.example.fruitapp.data.Favorite
-import com.example.fruitapp.data.FavoriteDao
 import com.example.fruitapp.data.Fruit
-import com.example.fruitapp.data.FruitApi
 import com.example.fruitapp.data.Image
-import com.example.fruitapp.data.ImageApi
 import com.example.fruitapp.data.Nutritions
 import com.example.fruitapp.data.Photo
 import com.example.fruitapp.data.Src
 import com.example.fruitapp.nav.NavEvent
 import com.example.fruitapp.nav.Navigator
+import io.mockk.Runs
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
@@ -23,15 +23,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import org.junit.Assert.*
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Test
 
 class DetailsViewModelTest {
 
     private lateinit var sut: DetailsViewModel
-    private lateinit var api: FruitApi
-    private lateinit var imageApi: ImageApi
-    private lateinit var favoriteDao: FavoriteDao
+    private lateinit var getFruitDetailsUseCase: GetFruitDetailsUseCase
+    private lateinit var getFruitImageUseCase: GetFruitImageUseCase
+    private lateinit var getFavoriteByNameUseCase: GetFavoriteByNameUseCase
+    private lateinit var addToFavoriteUseCase: AddToFavoriteUseCase
+    private lateinit var removeFromFavoriteUseCase: RemoveFromFavoriteUseCase
     private val testDispatcher = StandardTestDispatcher()
     private val savedStateHandleOrange: SavedStateHandle = SavedStateHandle().apply {
         set("name", "orange")
@@ -129,10 +131,11 @@ class DetailsViewModelTest {
             setup()
             //Act
             sut.onIntent(DetailsIntent.OnFavoriteClick("orange"))
+            testDispatcher.scheduler.advanceUntilIdle()
             //Assert
-            verify { favoriteDao.deleteFav("orange") }
+            coVerify { removeFromFavoriteUseCase("orange") }
         }
-    
+
 
     @Test
     fun `should add fruit to favorites after favorite button click when fruit is not in favorites`() =
@@ -141,30 +144,38 @@ class DetailsViewModelTest {
             setup(savedStateHandleApple)
             //Act
             sut.onIntent(DetailsIntent.OnFavoriteClick("apple"))
+            testDispatcher.scheduler.advanceUntilIdle()
             //Assert
-            verify { favoriteDao.insertFav(Favorite(fruitName = "apple")) }
+            coVerify { addToFavoriteUseCase(("apple")) }
         }
 
 
     private fun setup(savedStateHandle: SavedStateHandle = savedStateHandleOrange) {
         Dispatchers.setMain(testDispatcher)
-        api = mockk()
-        imageApi = mockk()
-        favoriteDao = mockk()
+        getFruitDetailsUseCase = mockk()
+        getFruitImageUseCase = mockk()
+        getFavoriteByNameUseCase = mockk()
+        addToFavoriteUseCase = mockk()
+        removeFromFavoriteUseCase = mockk()
         mockkStatic(android.util.Log::class)
         mockkObject(Navigator)
         every { Log.e(any(), any(), any()) } returns 0
-        coEvery { api.getFruitDetails("orange") } returns orange
-        coEvery { api.getFruitDetails("apple") } returns apple
-        coEvery { imageApi.getImage("orange") } returns image
-        coEvery { imageApi.getImage("apple") } returns image
-        every { favoriteDao.getFavByName("orange") } returns Favorite(1, "Orange")
-        every { favoriteDao.getFavByName("apple") } throws android.database.sqlite.SQLiteException("No record found")
+        coEvery { getFruitDetailsUseCase("orange") } returns orange
+        coEvery { getFruitDetailsUseCase("apple") } returns apple
+        coEvery { getFruitImageUseCase("orange") } returns image
+        coEvery { getFruitImageUseCase("apple") } returns image
+        every { getFavoriteByNameUseCase("orange") } returns Favorite(1, "Orange")
+        every { getFavoriteByNameUseCase("apple") } returns null
+        coEvery { removeFromFavoriteUseCase("orange") } just Runs
+        coEvery { addToFavoriteUseCase("apple") } just Runs
+
         sut = DetailsViewModel(
-            savedStateHandle = savedStateHandle,
-            api = api,
-            imageApi = imageApi,
-            favoriteDao = favoriteDao
+            savedStateHandle,
+            getFruitDetailsUseCase,
+            getFruitImageUseCase,
+            getFavoriteByNameUseCase,
+            addToFavoriteUseCase,
+            removeFromFavoriteUseCase
         )
         testDispatcher.scheduler.advanceUntilIdle()
     }

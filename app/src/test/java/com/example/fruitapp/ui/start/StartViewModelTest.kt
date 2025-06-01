@@ -1,7 +1,6 @@
 package com.example.fruitapp.ui.start
 
 import com.example.fruitapp.data.Fruit
-import com.example.fruitapp.data.FruitApi
 import com.example.fruitapp.data.Nutritions
 import com.example.fruitapp.nav.NavEvent
 import com.example.fruitapp.nav.Navigator
@@ -14,17 +13,24 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import org.junit.Assert.*
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Test
 
 class StartViewModelTest {
-
     private lateinit var sut: StartViewModel
-    private lateinit var api: FruitApi
+    private lateinit var getFruitListUseCase: GetFruitListUseCase
+    private lateinit var searchFruitByNameUseCase: SearchFruitByNameUseCase
     private val testDispatcher = StandardTestDispatcher()
     private val fruitList = listOf(
         Fruit("Rosaceae", "Malus", 1, "Apple", Nutritions(52, 14.0, 0.2, 0.3, 10.0), "Rosales"),
-        Fruit("Musaceae", "Musa", 2, "Banana", Nutritions(89, 23.0, 0.3, 1.1, 12.0), "Zingiberales"),
+        Fruit(
+            "Musaceae",
+            "Musa",
+            2,
+            "Banana",
+            Nutritions(89, 23.0, 0.3, 1.1, 12.0),
+            "Zingiberales"
+        ),
         Fruit("Rutaceae", "Citrus", 3, "Orange", Nutritions(47, 12.0, 0.1, 0.9, 9.0), "Sapindales")
     )
     private val fruit =
@@ -85,7 +91,7 @@ class StartViewModelTest {
     fun `should update state with fruit details when search button click`() = runTest {
         //Arrange
         setup(initialState = StartState(text = "orange"))
-        coEvery { api.getFruitDetails("orange") } returns fruit
+        coEvery { searchFruitByNameUseCase("orange") } returns fruit
         //Act
         sut.onIntent(StartIntent.OnSearchClick)
         testDispatcher.scheduler.advanceUntilIdle()
@@ -100,7 +106,7 @@ class StartViewModelTest {
     fun `should navigate to details screen after search button click`() = runTest {
         //Arrange
         setup(initialState = StartState(text = "orange"))
-        coEvery { api.getFruitDetails("orange") } returns fruit
+        coEvery { searchFruitByNameUseCase("orange") } returns fruit
         //Act
         sut.onIntent(StartIntent.OnSearchClick)
         testDispatcher.scheduler.advanceUntilIdle()
@@ -196,12 +202,14 @@ class StartViewModelTest {
 
     private fun setup(initialState: StartState = StartState()) {
         Dispatchers.setMain(testDispatcher)
-        api = mockk()
-        coEvery { api.getList() } returns fruitList
+        getFruitListUseCase = mockk()
+        searchFruitByNameUseCase = mockk()
+        coEvery { getFruitListUseCase() } returns fruitList
         mockkObject(Navigator)
         sut = StartViewModel(
-            api = api,
-            initialState = initialState
+            getFruitListUseCase,
+            searchFruitByNameUseCase,
+            initialState
         )
         testDispatcher.scheduler.advanceUntilIdle()
     }

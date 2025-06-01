@@ -2,7 +2,6 @@ package com.example.fruitapp.ui.start
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.fruitapp.data.FruitApi
 import com.example.fruitapp.nav.NavEvent
 import com.example.fruitapp.nav.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,7 +15,8 @@ import kotlinx.coroutines.flow.update
 
 @HiltViewModel
 class StartViewModel @Inject constructor(
-    private val api: FruitApi,
+    private val getFruitListUseCase: GetFruitListUseCase,
+    private val searchFruitByNameUseCase: SearchFruitByNameUseCase,
     initialState: StartState
 ) : ViewModel() {
 
@@ -31,7 +31,7 @@ class StartViewModel @Inject constructor(
 
     private fun getList() {
         viewModelScope.launch {
-            fruitList = api.getList()
+            fruitList = getFruitListUseCase()
         }
     }
 
@@ -103,7 +103,7 @@ class StartViewModel @Inject constructor(
                 try {
                     _state.update {
                         it.copy(
-                            fruit = api.getFruitDetails(text),
+                            fruit = searchFruitByNameUseCase(text),
                             text = "",
                             filteredFruitList = emptyList()
                         )

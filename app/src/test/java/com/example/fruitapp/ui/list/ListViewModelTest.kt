@@ -1,15 +1,13 @@
 package com.example.fruitapp.ui.list
 
 import androidx.lifecycle.SavedStateHandle
-import com.example.fruitapp.data.FavoriteDao
 import com.example.fruitapp.data.Fruit
-import com.example.fruitapp.data.FruitApi
 import com.example.fruitapp.data.Nutritions
 import com.example.fruitapp.nav.NavEvent
 import com.example.fruitapp.nav.Navigator
 import com.example.fruitapp.nav.Screen
+import com.example.fruitapp.ui.start.GetFruitListUseCase
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.verify
@@ -17,25 +15,39 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import org.junit.Assert.*
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 
 class ListViewModelTest {
 
-private lateinit var sut: ListViewModel
-private lateinit var api: FruitApi
-private lateinit var favoriteDao: FavoriteDao
-private val testDispatcher = StandardTestDispatcher()
-private val savedStateHandleFalse: SavedStateHandle = SavedStateHandle().apply {
-    set("favorite", false)
-}
+    private lateinit var sut: ListViewModel
+    private lateinit var getFavoriteUseCase: GetFavoriteUseCase
+    private lateinit var getFruitListUseCase: GetFruitListUseCase
+    private val testDispatcher = StandardTestDispatcher()
+    private val savedStateHandleFalse: SavedStateHandle = SavedStateHandle().apply {
+        set("favorite", false)
+    }
     private val savedStateHandleTrue: SavedStateHandle = SavedStateHandle().apply {
         set("favorite", true)
     }
     private val fruitList = listOf(
         Fruit("Rosaceae", "Malus", 1, "Apple", Nutritions(52, 14.0, 0.2, 0.3, 10.0), "Rosales"),
-        Fruit("Musaceae", "Musa", 2, "Banana", Nutritions(89, 23.0, 0.3, 1.1, 12.0), "Zingiberales"),
+        Fruit(
+            "Musaceae",
+            "Musa",
+            2,
+            "Banana",
+            Nutritions(89, 23.0, 0.3, 1.1, 12.0),
+            "Zingiberales"
+        ),
         Fruit("Rutaceae", "Citrus", 3, "Orange", Nutritions(47, 12.0, 0.1, 0.9, 9.0), "Sapindales")
+    )
+    private val favoriteFruitList = listOf(
+        Fruit("Rosaceae", "Malus", 1, "Apple", Nutritions(52, 14.0, 0.2, 0.3, 10.0), "Rosales"),
+        Fruit("Rutaceae", "Citrus", 3, "Orange", Nutritions(47, 12.0, 0.1, 0.9, 9.0), "Sapindales")
+
     )
 
     @Test
@@ -53,10 +65,9 @@ private val savedStateHandleFalse: SavedStateHandle = SavedStateHandle().apply {
         setup(savedStateHandleTrue)
         //Act
         //Assert
-        assertEquals(listOf(
-            Fruit("Rosaceae", "Malus", 1, "Apple", Nutritions(52, 14.0, 0.2, 0.3, 10.0), "Rosales"),
-            Fruit("Rutaceae", "Citrus", 3, "Orange", Nutritions(47, 12.0, 0.1, 0.9, 9.0), "Sapindales")
-        ), sut.state.value.fruitList)
+        assertEquals(
+            favoriteFruitList, sut.state.value.fruitList
+        )
     }
 
     @Test
@@ -65,11 +76,11 @@ private val savedStateHandleFalse: SavedStateHandle = SavedStateHandle().apply {
         setup()
         //Act
         sut.onIntent(ListIntent.OnFavoriteClick)
+        testDispatcher.scheduler.advanceUntilIdle()
         //Assert
-        assertEquals(listOf(
-            Fruit("Rosaceae", "Malus", 1, "Apple", Nutritions(52, 14.0, 0.2, 0.3, 10.0), "Rosales"),
-            Fruit("Rutaceae", "Citrus", 3, "Orange", Nutritions(47, 12.0, 0.1, 0.9, 9.0), "Sapindales")
-        ), sut.state.value.fruitList)
+        assertEquals(
+            favoriteFruitList, sut.state.value.fruitList
+        )
     }
 
     @Test
@@ -103,32 +114,80 @@ private val savedStateHandleFalse: SavedStateHandle = SavedStateHandle().apply {
     }
 
     @Test
-    fun `should updated state with sorted by descending fruit list when descending click`() = runTest {
-        //Arrange
-        setup()
-        //Act
-        sut.onIntent(ListIntent.OnDescendingClick)
-        //Assert
-        assertEquals(listOf(
-            Fruit("Musaceae", "Musa", 2, "Banana", Nutritions(89, 23.0, 0.3, 1.1, 12.0), "Zingiberales"),
-            Fruit("Rosaceae", "Malus", 1, "Apple", Nutritions(52, 14.0, 0.2, 0.3, 10.0), "Rosales"),
-            Fruit("Rutaceae", "Citrus", 3, "Orange", Nutritions(47, 12.0, 0.1, 0.9, 9.0), "Sapindales")
-        ), sut.state.value.fruitList)
-    }
+    fun `should updated state with sorted by descending fruit list when descending click`() =
+        runTest {
+            //Arrange
+            setup()
+            //Act
+            sut.onIntent(ListIntent.OnDescendingClick)
+            //Assert
+            assertEquals(
+                listOf(
+                    Fruit(
+                        "Musaceae",
+                        "Musa",
+                        2,
+                        "Banana",
+                        Nutritions(89, 23.0, 0.3, 1.1, 12.0),
+                        "Zingiberales"
+                    ),
+                    Fruit(
+                        "Rosaceae",
+                        "Malus",
+                        1,
+                        "Apple",
+                        Nutritions(52, 14.0, 0.2, 0.3, 10.0),
+                        "Rosales"
+                    ),
+                    Fruit(
+                        "Rutaceae",
+                        "Citrus",
+                        3,
+                        "Orange",
+                        Nutritions(47, 12.0, 0.1, 0.9, 9.0),
+                        "Sapindales"
+                    )
+                ), sut.state.value.fruitList
+            )
+        }
 
     @Test
-    fun `should updated state with sorted by ascending fruit list when descending click`() = runTest {
-        //Arrange
-        setup()
-        //Act
-        sut.onIntent(ListIntent.OnAscendingClick)
-        //Assert
-        assertEquals(listOf(
-            Fruit("Rutaceae", "Citrus", 3, "Orange", Nutritions(47, 12.0, 0.1, 0.9, 9.0), "Sapindales"),
-            Fruit("Rosaceae", "Malus", 1, "Apple", Nutritions(52, 14.0, 0.2, 0.3, 10.0), "Rosales"),
-            Fruit("Musaceae", "Musa", 2, "Banana", Nutritions(89, 23.0, 0.3, 1.1, 12.0), "Zingiberales")
-        ), sut.state.value.fruitList)
-    }
+    fun `should updated state with sorted by ascending fruit list when descending click`() =
+        runTest {
+            //Arrange
+            setup()
+            //Act
+            sut.onIntent(ListIntent.OnAscendingClick)
+            //Assert
+            assertEquals(
+                listOf(
+                    Fruit(
+                        "Rutaceae",
+                        "Citrus",
+                        3,
+                        "Orange",
+                        Nutritions(47, 12.0, 0.1, 0.9, 9.0),
+                        "Sapindales"
+                    ),
+                    Fruit(
+                        "Rosaceae",
+                        "Malus",
+                        1,
+                        "Apple",
+                        Nutritions(52, 14.0, 0.2, 0.3, 10.0),
+                        "Rosales"
+                    ),
+                    Fruit(
+                        "Musaceae",
+                        "Musa",
+                        2,
+                        "Banana",
+                        Nutritions(89, 23.0, 0.3, 1.1, 12.0),
+                        "Zingiberales"
+                    )
+                ), sut.state.value.fruitList
+            )
+        }
 
     @Test
     fun `should not show sorting menu when sorting dismiss`() = runTest {
@@ -170,18 +229,18 @@ private val savedStateHandleFalse: SavedStateHandle = SavedStateHandle().apply {
         assertEquals(NutritionOptions.Sugar, sut.state.value.nutrition)
     }
 
-private fun setup(savedStateHandle: SavedStateHandle = savedStateHandleFalse){
-    Dispatchers.setMain(testDispatcher)
-    api = mockk()
-    favoriteDao = mockk()
-    mockkObject(Navigator)
-    coEvery { api.getList() } returns fruitList
-    every { favoriteDao.getAllFav() } returns (listOf("Apple", "Orange"))
-    sut = ListViewModel(
-        api = api,
-        favoriteDao = favoriteDao,
-        savedStateHandle = savedStateHandle
-    )
-    testDispatcher.scheduler.advanceUntilIdle()
-}
+    private fun setup(savedStateHandle: SavedStateHandle = savedStateHandleFalse) {
+        Dispatchers.setMain(testDispatcher)
+        getFavoriteUseCase = mockk()
+        getFruitListUseCase = mockk()
+        mockkObject(Navigator)
+        coEvery { getFruitListUseCase() } returns fruitList
+        coEvery { getFavoriteUseCase(fruitList) } returns favoriteFruitList
+        sut = ListViewModel(
+            getFruitListUseCase,
+            getFavoriteUseCase,
+            savedStateHandle
+        )
+        testDispatcher.scheduler.advanceUntilIdle()
+    }
 }
