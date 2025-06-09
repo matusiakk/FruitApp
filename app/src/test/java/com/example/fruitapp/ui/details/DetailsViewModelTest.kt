@@ -5,9 +5,6 @@ import androidx.lifecycle.SavedStateHandle
 import com.example.fruitapp.data.Favorite
 import com.example.fruitapp.data.Fruit
 import com.example.fruitapp.data.Image
-import com.example.fruitapp.data.Nutritions
-import com.example.fruitapp.data.Photo
-import com.example.fruitapp.data.Src
 import com.example.fruitapp.nav.NavEvent
 import com.example.fruitapp.nav.Navigator
 import io.mockk.Runs
@@ -41,41 +38,12 @@ class DetailsViewModelTest {
     private val savedStateHandleApple: SavedStateHandle = SavedStateHandle().apply {
         set("name", "apple")
     }
-    private val orange =
-        Fruit("Rutaceae", "Citrus", 3, "Orange", Nutritions(47, 12.0, 0.1, 0.9, 9.0), "Sapindales")
-    private val apple =
-        Fruit("Rosaceae", "Malus", 1, "Apple", Nutritions(52, 14.0, 0.2, 0.3, 10.0), "Rosales")
+    private val orange = mockk<Fruit>(relaxed = true)
+    {every {name} returns "Orange"}
+    private val apple = mockk<Fruit>(relaxed = true)
+    {every {name} returns "Apple"}
 
-    private val image = Image(
-        next_page = "https://api.example.com/images?page=2",
-        page = 1,
-        per_page = 10,
-        total_results = 100,
-        photos = listOf(
-            Photo(
-                alt = "Test",
-                avg_color = "#FFA500",
-                height = 4000,
-                id = 12345,
-                liked = false,
-                photographer = "John Doe",
-                photographer_id = 67890,
-                photographer_url = "https://example.com/photographer/john-doe",
-                url = "https://example.com/photo/12345",
-                width = 6000,
-                src = Src(
-                    landscape = "https://example.com/images/landscape.jpg",
-                    large = "https://example.com/images/large.jpg",
-                    large2x = "https://example.com/images/large2x.jpg",
-                    medium = "https://example.com/images/medium.jpg",
-                    original = "https://example.com/images/original.jpg",
-                    portrait = "https://example.com/images/portrait.jpg",
-                    small = "https://example.com/images/small.jpg",
-                    tiny = "https://example.com/images/tiny.jpg"
-                )
-            )
-        )
-    )
+    private val image = mockk<Image>(relaxed = true)
 
 
     @Test
